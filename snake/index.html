@@ -477,9 +477,10 @@
             triggerFoodExplosion(newHeadX + gridSize / 2, newHeadY + gridSize / 2);
             placePoisonFruit();
         } else if (ateBomb) {
-            const newSnake = [{ x: newHeadX, y: newHeadY }, ...snake.slice(0, -1)];
-            snake = newSnake.length > 2 ? newSnake.slice(0, -2) : [newSnake[0]];
             triggerFoodExplosion(newHeadX + gridSize / 2, newHeadY + gridSize / 2);
+            const newSnake = [{ x: newHeadX, y: newHeadY }, ...snake.slice(0, -1)];
+            if (newSnake.length <= 2) { gameOver(); return; }
+            snake = newSnake.slice(0, -2);
             placeBomb();
         } else {
             snake = [{ x: newHeadX, y: newHeadY }, ...snake.slice(0, -1)];
@@ -624,16 +625,49 @@
 
     function gameOver() {
         gameRunning = false;
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+
+        // Dim overlay
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.fillStyle = 'white';
-        ctx.font = '40px Arial';
+
+        // Panel
+        const pw = 280, ph = 160;
+        const px = (canvas.width - pw) / 2, py = (canvas.height - ph) / 2;
+        ctx.save();
+        ctx.shadowColor = '#ff2244';
+        ctx.shadowBlur = 40;
+        ctx.fillStyle = '#0a0410';
+        ctx.strokeStyle = '#ff224466';
+        ctx.lineWidth = 1.5;
+        drawRoundRect(px, py, pw, ph, 14);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        const cx = canvas.width / 2;
+
+        // Title
+        ctx.save();
         ctx.textAlign = 'center';
-        ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 20);
-        ctx.font = '20px Arial';
-        ctx.fillText('Final Score: ' + score, canvas.width / 2, canvas.height / 2 + 20);
-        ctx.fillText('Refresh to Restart', canvas.width / 2, canvas.height / 2 + 50);
+        ctx.font = 'bold 28px Orbitron, monospace';
+        ctx.shadowColor = '#ff2244';
+        ctx.shadowBlur = 20;
+        ctx.fillStyle = '#ff4466';
+        ctx.fillText('GAME OVER', cx, py + 52);
+
+        // Score
+        ctx.font = 'bold 13px Orbitron, monospace';
+        ctx.shadowColor = '#00ff88';
+        ctx.shadowBlur = 10;
+        ctx.fillStyle = '#00ff88';
+        ctx.fillText('SCORE  ' + score, cx, py + 88);
+
+        // Hint
+        ctx.font = '11px Orbitron, monospace';
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#44664455';
+        ctx.fillText('press  RESTART  to play again', cx, py + 128);
+        ctx.restore();
     }
 
     // --- Input Handling ---
