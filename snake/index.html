@@ -144,6 +144,11 @@
             <option value="3">3 shots</option>
             <option value="unlimited">Unlimited</option>
         </select>
+        <label for="specialInterval">Special Items:</label>
+        <select id="specialInterval">
+            <option value="5">Every 5 fruits</option>
+            <option value="10" selected>Every 10 fruits</option>
+        </select>
         <label for="sizeChoice">Board Size:</label>
         <select id="sizeChoice">
             <option value="300">Small (300px)</option>
@@ -168,6 +173,9 @@
     let poisonFruit = null;
     let poisonActive = false;
     let bomb = null;
+    let fruitsEaten = 0;
+    let specialInterval = 10;
+    let specialIndex = 0; // cycles 0=fire, 1=poison, 2=bomb
     let dx = 0; // velocity x
     let dy = 0; // velocity y
     let score = 0;
@@ -226,6 +234,13 @@
             (poisonFruit && x === poisonFruit.x && y === poisonFruit.y)
         );
         bomb = { x, y };
+    }
+
+    function spawnNextSpecial() {
+        if      (specialIndex % 3 === 0) placeFireFruit();
+        else if (specialIndex % 3 === 1) placePoisonFruit();
+        else                             placeBomb();
+        specialIndex++;
     }
 
     function isWallHit(x, y) {
@@ -465,23 +480,25 @@
         if (ateFood) {
             snake = [{ x: newHeadX, y: newHeadY }, ...snake];
             score++;
+            fruitsEaten++;
             placeFood();
+            if (fruitsEaten % specialInterval === 0) spawnNextSpecial();
         } else if (ateFireFruit) {
             snake = [{ x: newHeadX, y: newHeadY }, ...snake];
             fireCharges = fireModeUnlimited ? Infinity : fireCharges + 3;
             triggerFoodExplosion(newHeadX + gridSize / 2, newHeadY + gridSize / 2);
-            placeFireFruit();
+            fireFruit = null;
         } else if (atePoisonFruit) {
             snake = [{ x: newHeadX, y: newHeadY }, ...snake];
             poisonActive = true;
             triggerFoodExplosion(newHeadX + gridSize / 2, newHeadY + gridSize / 2);
-            placePoisonFruit();
+            poisonFruit = null;
         } else if (ateBomb) {
             triggerFoodExplosion(newHeadX + gridSize / 2, newHeadY + gridSize / 2);
             const newSnake = [{ x: newHeadX, y: newHeadY }, ...snake.slice(0, -1)];
             if (newSnake.length <= 2) { gameOver(); return; }
             snake = newSnake.slice(0, -2);
-            placeBomb();
+            bomb = null;
         } else {
             snake = [{ x: newHeadX, y: newHeadY }, ...snake.slice(0, -1)];
         }
@@ -502,7 +519,11 @@
                 snake = [...snake, { ...snake[snake.length - 1] }];
                 fireCharges = fireModeUnlimited ? Infinity : fireCharges + 3;
                 triggerFoodExplosion(fireFruit.x + gridSize / 2, fireFruit.y + gridSize / 2);
-                placeFireFruit();
+                fireFruit = null;
+            }
+            if (bomb && inAura(bomb.x, bomb.y)) {
+                triggerFoodExplosion(bomb.x + gridSize / 2, bomb.y + gridSize / 2);
+                bomb = null;
             }
         }
 
@@ -549,7 +570,7 @@
                 const bx = bomb.x + gridSize / 2, by = bomb.y + gridSize / 2;
                 if (Math.hypot(fb.x - bx, fb.y - by) < gridSize) {
                     triggerFoodExplosion(bx, by);
-                    placeBomb();
+                    bomb = null;
                     fireballs.splice(i, 1);
                     continue;
                 }
@@ -734,20 +755,24 @@
         particles = [];
         fireCharges = 0;
         poisonActive = false;
+        fireFruit = null;
+        poisonFruit = null;
+        bomb = null;
+        fruitsEaten = 0;
+        specialIndex = 0;
+        specialInterval = parseInt(document.getElementById('specialInterval').value);
         placeFood();
-        placeFireFruit();
-        placePoisonFruit();
-        placeBomb();
 
         requestAnimationFrame(gameLoop);
     }
 
     function gameLoop(timestamp) {
         if (!gameRunning) return;
-        updateGame(timestamp);   // snake moves on throttled interval
-        updateFireballs();       // fireballs move every frame
+        updateGame(timestamp);
+        if (!gameRunning) return; // gameOver() was triggered inside updateGame
+        updateFireballs();
         updateParticles();
-        draw();                  // render everything every frame
+        draw();
         requestAnimationFrame(gameLoop);
     }
 
