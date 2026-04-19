@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gameshow — Mini Games</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(ellipse at top, #0d1b2a 0%, #050a0f 100%);
+            font-family: 'Inter', sans-serif;
+            color: #e0ffe0;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: 6px;
+            background: linear-gradient(90deg, #00ff88, #00ccff, #00ff88);
+            background-size: 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+        }
+
+        header p {
+            margin-top: 12px;
+            font-size: 14px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #44bb6688;
+        }
+
+        @keyframes shimmer {
+            0%   { background-position: 0% }
+            100% { background-position: 200% }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 28px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 40px 80px;
+        }
+
+        .card {
+            background: linear-gradient(145deg, #0a1628cc, #04080fcc);
+            border: 1px solid #00ff8833;
+            border-radius: 16px;
+            padding: 32px 24px 24px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            box-shadow: 0 0 20px #00ff4411;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: #00ff8877;
+            box-shadow: 0 0 40px #00ff4433, 0 12px 30px #00000066;
+        }
+
+        .card-icon {
+            font-size: 48px;
+            line-height: 1;
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #00ff88;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #aaccaa;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .tag {
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 1px solid #00ff8844;
+            color: #00cc88;
+        }
+
+        .play-btn {
+            margin-top: auto;
+            display: inline-block;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #00cc66, #00aaff);
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 50px;
+            text-align: center;
+            transition: opacity 0.15s;
+        }
+
+        .card:hover .play-btn {
+            opacity: 0.85;
+        }
+
+        .coming-soon {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .coming-soon .play-btn {
+            background: #333;
+            color: #666;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: #223322;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>GAMESHOW</h1>
+    <p>A collection of browser mini games</p>
+</header>
+
+<div class="grid">
+
+    <a class="card" href="snake/index.html">
+        <div class="card-icon">🐍</div>
+        <div class="card-title">Snake</div>
+        <div class="card-desc">
+            Classic snake with a twist — collect fire and poison power-ups,
+            shoot fireballs, and dodge bombs.
+        </div>
+        <div class="card-tags">
+            <span class="tag">Keyboard</span>
+            <span class="tag">Power-ups</span>
+            <span class="tag">Canvas</span>
+        </div>
+        <div class="play-btn">Play Now</div>
+    </a>
+
+    <div class="card coming-soon">
+        <div class="card-icon">🏓</div>
+        <div class="card-title">Pong</div>
+        <div class="card-desc">Coming soon.</div>
+        <div class="card-tags"><span class="tag">2 Player</span></div>
+        <div class="play-btn">Coming Soon</div>
+    </div>
+
+    <div class="card coming-soon">
+        <div class="card-icon">🧠</div>
+        <div class="card-title">Memory Cards</div>
+        <div class="card-desc">Coming soon.</div>
+        <div class="card-tags"><span class="tag">Puzzle</span></div>
+        <div class="play-btn">Coming Soon</div>
+    </div>
+
+</div>
+
+<footer>built with ♥ &amp; claude code</footer>
+
+</body>
+</html>
